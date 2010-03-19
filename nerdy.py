@@ -152,6 +152,8 @@ def clip_repeated_wings(*data):
         '''
         Sometimes call_iv == put_iv. Almost certainly shitty data. Clip.
         '''
+        if len(data[0]) < 2:
+            return [[] for d in data]
         top_row = [d[0] for d in data]
         dupe_found = any([top_row.count(item) > 1 for item in top_row])
         if dupe_found:
