@@ -3,6 +3,7 @@ from scipy.interpolate import UnivariateSpline
 from scipy.optimize import curve_fit
 import pylab
 import numpy as np
+from ipshell import ipshell
 
 def moneyness(strike, forward, sigma, t):
     return (np.log(strike) - np.log(forward)) / (sigma * np.sqrt(t))
@@ -32,6 +33,36 @@ def find_implied_forward(synthetic_bids, synthetic_offers):
         return avg_mid
     else:
         return IF
+
+from functools import partial
+from openopt import NLP
+import pyipopt
+def wls_fit(function, initial_guess, X, Y, weights=None, lb=None, ub=None):
+    """[Inputs]
+        function is of form:
+            def function(coeffs, xdata)
+    """
+                
+    if weights is None:
+        weights = [1] * len(X)
+
+    def penalty(c):
+        fit = function(c, X)
+        error = (weights * (Y - fit) ** 2).sum()
+        return error
+
+    problem = NLP(penalty, initial_guess)
+
+    if lb is not None:
+        problem.lb = lb
+    if ub is not None:
+        problem.ub = ub
+
+    solver = 'ipopt'
+    result = problem.solve(solver)
+
+    coeffs = result.xf
+    return coeffs
 
 def spline_fit(strikes, implied_vols, degree=4):
     '''
