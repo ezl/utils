@@ -113,6 +113,7 @@ def fit_smile(strikes, implied_vols, degree=4, w=None):
     return polyfit_unweighted(strikes, implied_vols, degree=degree)
     # return polyfit_weighted(strikes, implied_vols, degree=4, w=w)
 
+# TODO: is this unused now?
 def clip_wings(strikes, implied_vols):
     '''
     Clips wings of strikes and implied vols.
@@ -147,6 +148,17 @@ def clip_repeated_wings(*data):
                  and corresponding indexed values of other arrays are popped.
         Returns: Clipped numpy arrays
     '''
+    def clip_dupes(data):
+        '''
+        Sometimes call_iv == put_iv. Almost certainly shitty data. Clip.
+        '''
+        top_row = [d[0] for d in data]
+        dupe_found = any([top_row.count(item) > 1 for item in top_row])
+        if dupe_found:
+            [d.pop(0) for d in data]
+            return clip_dupes(data)
+        return data
+
     def clip_left(data):
         if len(data[0]) < 2:
             return [[] for d in data]
@@ -155,12 +167,15 @@ def clip_repeated_wings(*data):
             [d.pop(0) for d in data]
             return clip_left(data)
         else:
+            clip_dupes(data)
             return data
+
     def clip_right(data):
         [d.reverse() for d in data]
         data = clip_left(data)
         [d.reverse() for d in data]
         return data
+
     all_same_length = all([len(d) == len(data[0]) for d in data])
     if not all_same_length:
         msg = "Inputs not all same length"
