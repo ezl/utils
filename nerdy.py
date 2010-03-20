@@ -100,33 +100,6 @@ def fit_smile(strikes, implied_vols, degree=4, w=None):
     return polyfit_unweighted(strikes, implied_vols, degree=degree)
     # return polyfit_weighted(strikes, implied_vols, degree=4, w=w)
 
-# TODO: is this unused now?
-def clip_wings(strikes, implied_vols):
-    '''
-    Clips wings of strikes and implied vols.
-
-    Removes endpoints and any points adjacent with values
-    equal to the relevant endpoint
-
-    This is awful:
-        1. np arrays don't have a pop function, and I'm probably using
-           np arrays as inputs. converting to list and back
-        2. wtf. seriously just repeating code.
-        gets the job done for now. refactor later.
-    '''
-    if implied_vols[0] != implied_vols[1] and implied_vols[-2] != implied_vols[-1]:
-        return strikes, implied_vols
-    def remove_repeated_from_left(strikes, implied_vols):
-        while implied_vols[0] == implied_vols[1] and len(implied_vols) > 2:
-            implied_vols.pop(0)
-            strikes.pop(0)
-    strikes = list(strikes); implied_vols = list(implied_vols)
-    for ihatepython in ["fuck", "this"]:
-        remove_repeated_from_left(strikes, implied_vols)
-        strikes.reverse(); implied_vols.reverse()
-    strikes = np.array(strikes); implied_vols = np.array(implied_vols)
-    return strikes, implied_vols
-
 def clip_repeated_wings(*data):
     '''Clips numpy vectors on both ends if any vector repeats.
 
