@@ -1,6 +1,5 @@
 import scipy
 from scipy.interpolate import UnivariateSpline
-from scipy.optimize import curve_fit
 import pylab
 import numpy as np
 from ipshell import ipshell
@@ -91,18 +90,6 @@ def quartic(x, p4, p3, p2, p1, p0):
     return (p4*x**4) + (p3*x**3) + (p2*x**2) + (p1*x) + p0
 
 # TODO: i hate this how can i generate the necessary function?
-
-def polyfit_weighted(strikes, implied_vols, degree=4, w=None):
-    if degree == 1:
-        general_form = line 
-    if degree == 2:
-        general_form = quadratic
-    if degree == 3:
-        general_form = cubic
-    else:
-        general_form = quartic
-    popt, pcov = curve_fit(general_form, strikes, implied_vols, sigma=w)
-    return popt
 
 def polyfit_unweighted(strikes, implied_vols, degree=4):
     '''Fit a vol smile'''
