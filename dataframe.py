@@ -9,6 +9,8 @@ class dataframe(object):
             self.column_key[column] = i
             self.data.append(np.array([row[i] for row in data]))
     def __repr__(self):
+        if self.numrows() == 0:
+            return "Dataframe is empty."
         columns = str(self.columns)
         first_row = str([field[0] for field in self.data])
         repr = """
