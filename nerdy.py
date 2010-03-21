@@ -41,7 +41,7 @@ def wls_fit(function, initial_guess, X, Y, weights=None, lb=None, ub=None):
         function is of form:
             def function(coeffs, xdata)
     """
-                
+
     if weights is None:
         weights = [1] * len(X)
 
